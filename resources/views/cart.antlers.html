@@ -1,0 +1,105 @@
+<section class="py-8 border-b border-gray-200">
+    <div class="max-w-4xl mx-auto">
+        <h2 class="text-center text-4xl font-semibold mb-2">Your cart</h2>
+    </div>
+</section>
+
+<main>
+    <div class="max-w-4xl mx-auto my-12 px-4">
+        {{ if {sc:cart:has} === false || {sc:cart:count} === 0 }}
+            <p class="text-center">Your cart is empty! <a href="/catalog">Start shopping</a>.</p>
+        {{ else }}
+            {{ sc:cart }}
+                <table class="table-auto w-full bg-gray-100 rounded-lg p-4 mb-4">
+                    <thead>
+                        <tr class="border-b border-gray-200">
+                            <th class="px-4 py-3 text-left font-semibold text-sm w-2/3">Product</th>
+                            <th class="px-4 py-3 text-left font-semibold text-sm">Price</th>
+                            <th class="px-4 py-3 text-left font-semibold text-sm">Quantity</th>
+                            <th class="px-4 py-3 text-right font-semibold text-sm">Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {{ items }}
+                            <tr class="border-b border-gray-200">
+                                <td class="text-sm px-4 py-4">
+                                    <div class="flex flex-row items-center">
+                                        <a class="hidden md:block" href="{{ product:url }}">
+                                            {{ product:gallery }}
+                                                {{ if first }}
+                                                    <img class="w-32"
+                                                        src="{{ url }}" alt="{{ alt }}">
+                                                {{ /if }}
+                                            {{ /product:gallery }}
+                                        </a>
+                                        <div class="md:px-4">
+                                            <span class="font-semibold">
+                                                {{ product:title }} 
+                                                {{ if variant }}({{ variant:variant }}){{ /if }}
+                                            </span>
+                                            
+                                            <br>
+
+                                            {{ sc:cart:removeItem :item="id" }}
+                                                <button class="mt-1 block text-sm text-gray-700">Remove</button>
+                                            {{ /sc:cart:removeItem }}
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-sm px-4 py-4">
+                                    {{ if variant }}
+                                        {{ variant:price }}
+                                    {{ else }}
+                                        {{ product:price }}
+                                    {{ /if }}
+                                </td>
+
+                                <td class="text-sm px-4 py-4">
+                                    {{ sc:cart:updateItem :item="id" }}
+                                        <select 
+                                            class="bg-white p-1 rounded w-16" 
+                                            name="quantity"
+                                            onchange="this.parentElement.submit()"
+                                        >
+                                            {{ loop from="1" to="5" }}
+                                                <option 
+                                                    value="{{ value }}"
+                                                    {{ if quantity == value }} selected {{ /if }}
+                                                >
+                                                    {{ value }}
+                                                </option>
+                                            {{ /loop }}
+                                        </select>
+                                    {{ /sc:cart:updateItem }}
+                                </td>
+
+                                <td class="text-sm px-4 py-4 text-right">{{ total }}</td>
+                            </tr>
+                        {{ /items }}
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="text-sm px-4 py-3 font-semibold">Subtotal</td>
+                            <td class="text-sm px-4 py-3 text-right">{{ items_total }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="text-right text-sm px-4 text-gray-500">
+                    <strong>Note:</strong> Shipping & Tax will be calculated at the end of the checkout.
+                </div>
+
+                <div class="flex items-center justify-end my-12">
+                    <a 
+                        class="bg-green-100 hover:opacity-75 text-gray-700 font-semibold rounded-lg px-4 py-2"
+                        href="/checkout"
+                    >
+                        Continue to Checkout</a>
+                </div>
+            {{ /sc:cart }}
+        {{ /if }}
+    </div>
+</main>
